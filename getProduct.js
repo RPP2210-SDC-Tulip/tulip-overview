@@ -53,8 +53,28 @@ async function getProduct(id) {
     }
 }
 
+async function getProducts(page = 1, count = 5) {
+    const skip = (page - 1) * count;
+    try {
+        const products = await Overview.find()
+            .skip(skip)
+            .limit(count)
+            .select('id name slogan description category default_price features -_id')
+            .exec();
+
+        if (products) {
+            return products;
+        } else {
+            throw new Error(`No products found in overviews collection.`);
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
+}
 
 module.exports = {
     Overview,
     getProduct,
+    getProducts,
 };
