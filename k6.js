@@ -9,6 +9,6 @@ export const options = {
 
 export default function () {
     const productId = Math.floor(Math.random() * (1000011 - 1) + 1);
-    http.get(`http://localhost:3000/products/${productId}`);
+    http.get(`http://localhost:3000/products/${productId}/related`);
     sleep(1);
 }
