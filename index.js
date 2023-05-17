@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+
 const { getProduct, getProducts } = require('./getProduct');
 const { getStyles } = require('./getStyles');
 const { getRelated } = require('./getRelated');
@@ -10,11 +11,7 @@ app.use(express.json());
 app.get('/products/:product_id/styles', async (req, res) => {
     const id = parseInt(req.params.product_id);
     try {
-        const startTime = process.hrtime.bigint();
         const styles = await getStyles(id);
-        const endTime = process.hrtime.bigint();
-        const duration = Number(endTime - startTime) / 1e6;
-        console.log('[getStyles]: ' + duration + ' ms');
         res.status(200).json(styles);
     } catch (err) {
         console.error('Error:', err);

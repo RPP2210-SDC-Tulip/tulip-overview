@@ -27,7 +27,6 @@ const overviewSchema = new Schema({
 const Overview = mongoose.model('Overview', overviewSchema);
 
 async function getProduct(id) {
-    // Product Information by product_id
     const startTime = process.hrtime();
     try {
         const product = await Overview.findOne({
@@ -42,7 +41,6 @@ async function getProduct(id) {
         if (product) {
             const endTime = process.hrtime(startTime);
             const duration = (endTime[0] * 1e9 + endTime[1]) / 1e6;
-            console.log(`${duration} ms [getProduct:${id}]`);
             return product;
         } else {
             throw new Error(`Product with id ${id} not found in overviews collection.`);
@@ -54,26 +52,35 @@ async function getProduct(id) {
 }
 
 async function getProducts(page = 1, count = 5) {
-    const skip = (page - 1) * count;
+    const startId = (page - 1) * count + 1;
+    const endId = startId + count;
+    const ids = [];
+    for (let i = startId; i < endId; i++) {
+        ids.push(String(i));
+    }
     try {
-        const products = await Overview.find()
-            .skip(skip)
-            .limit(count)
+        const products = await Overview.find({
+            id: { $in: ids }
+        })
             .select('id name slogan description category default_price features -_id')
             .exec();
 
         if (products) {
             return products;
         } else {
-            throw new Error(`No products found in overviews collection.`);
+            throw new Error(`No matching products found in overviews collection.`);
         }
     } catch (err) {
-        console.error('Error:', err);
+        console.error(`[Error]|[getProduct:${id}] ${err}`);
         throw err;
     }
 }
 
+
 module.exports = {
     getProduct,
     getProducts,
+    models: {
+        Overview
+    }
 };

@@ -24,7 +24,6 @@ const productSchema = new Schema({
 const Product = mongoose.model('Product', productSchema);
 
 async function getStyles(id) {
-    console.log(`Aggregating styles for product id: ${id}`);
     try {
         const styles = await Style.aggregate([
             {
@@ -89,11 +88,17 @@ async function getStyles(id) {
             throw new Error(`Style with id ${id} not found.`);
         }
     } catch (err) {
-        console.error('Error:', err);
+        console.error(`[Error]|[getStyles:${id}] ${err}`);
         throw err;
     }
 }
 
 module.exports = {
     getStyles,
+    models: {
+        Product,
+        Photo,
+        Sku,
+        Style
+    }
 };
