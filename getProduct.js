@@ -74,7 +74,6 @@ async function getProducts(page = 1, count = 5) {
 }
 
 module.exports = {
-    Overview,
     getProduct,
     getProducts,
 };
