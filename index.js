@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const { getProduct, getProducts } = require('./getProduct');
 const { getStyles } = require('./getStyles');
+const { getRelated } = require('./getRelated');
 
 app.use(express.json());
 
@@ -22,6 +23,21 @@ app.get('/products/:product_id/styles', async (req, res) => {
             res.status(404).json({ error: `Product with id ${id} not found.` });
         } else {
             res.status(500).json({ error: 'An error occurred while fetching the styles data.' });
+        }
+    }
+});
+
+app.get('/products/:product_id/related', async (req, res) => {
+    const id = parseInt(req.params.product_id);
+    try {
+        const related = await getRelated(id);
+        res.status(200).json(related);
+    } catch (err) {
+        console.error('Error:', err);
+        if (err.message.includes('not found')) {
+            res.status(404).json({ error: `Product with id ${id} not found.` });
+        } else {
+            res.status(500).json({ error: 'An error occurred while fetching the related data.' });
         }
     }
 });
