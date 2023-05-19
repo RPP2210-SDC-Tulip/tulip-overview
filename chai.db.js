@@ -3,7 +3,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const mongoose = require('mongoose');
 const { getProduct, getProducts, models: { Overview } } = require('./getProduct');
-const { getStyles, models: { Product, Photo, Sku, Style } } = require('./getStyles');
+const { getStyles, models: { Photo, Sku, Style } } = require('./getStyles');
 const { getRelated, models: { Related } } = require('./getRelated');
 
 /** config variables -- edit as needed */ 
@@ -47,7 +47,6 @@ describe('Database tests', function () {
         this.timeout(300000);
         const collections = [
             { name: 'overviews', model: Overview },
-            { name: 'product', model: Product },
             { name: 'photos', model: Photo },
             { name: 'skus', model: Sku },
             { name: 'styles', model: Style },
