@@ -10,6 +10,7 @@ const relatedSchema = new Schema({}, { strict: false, collection: 'related' });
 relatedSchema.index({ id: 1 });
 const Related = mongoose.model('Related', relatedSchema);
 
+
 async function getRelated(id) {
     try {
         const relatedProducts = await Related.find({ current_product_id: String(id) });

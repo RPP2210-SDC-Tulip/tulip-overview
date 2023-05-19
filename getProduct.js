@@ -64,7 +64,6 @@ async function getProducts(page = 1, count = 5) {
         })
             .select('id name slogan description category default_price features -_id')
             .exec();
-
         if (products) {
             return products;
         } else {

@@ -18,11 +18,6 @@ const photosSchema = new Schema({}, { strict: false, collection: 'photos' });
 photosSchema.index({ styleId: 1 });
 const Photo = mongoose.model('Photo', photosSchema);
 
-const productSchema = new Schema({
-    id: Number,
-}, { strict: false, collection: 'product' });
-const Product = mongoose.model('Product', productSchema);
-
 async function getStyles(id) {
     try {
         const styles = await Style.aggregate([
@@ -96,7 +91,6 @@ async function getStyles(id) {
 module.exports = {
     getStyles,
     models: {
-        Product,
         Photo,
         Sku,
         Style
