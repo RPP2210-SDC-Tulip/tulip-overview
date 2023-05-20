@@ -18,6 +18,52 @@ const photosSchema = new Schema({}, { strict: false, collection: 'photos' });
 photosSchema.index({ styleId: 1 });
 const Photo = mongoose.model('Photo', photosSchema);
 
+const fashionSchema = new Schema({
+    product_id: Number,
+    results: [
+        {
+            name: String,
+            original_price: String,
+            style_id: Number,
+            sale_price: String,
+            default: Boolean,
+            photos: [
+                {
+                    thumbnail_url: String,
+                    url: String,
+                },
+            ],
+            skus: Object,
+        },
+    ],
+});
+
+const Fashion = mongoose.model('Fashion', fashionSchema);
+
+async function getFashion(id) {
+    try {
+        const fashion = await Fashion.findOne({
+            $or: [
+                { product_id: String(id) },
+                { product_id: Number(id) },
+            ],
+        })
+            .select('product_id results -_id')
+            .exec();
+
+        if (fashion) {
+            console.log(fashion);
+            return fashion;
+        } else {
+            throw new Error(`Style with product_id ${id} not found in Fashions collection, which happens sometimes.`);
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
+}
+
+
 async function getStyles(id) {
     try {
         const styles = await Style.aggregate([
@@ -44,11 +90,11 @@ async function getStyles(id) {
             },
             {
                 $project: {
-                    _id: 0,  
+                    _id: 0,
                     style_id: "$id",
                     name: 1,
                     original_price: 1,
-                    sale_price: { 
+                    sale_price: {
                         $cond: { if: { $eq: ["$sale_price", "null"] }, then: "0", else: "$sale_price" }
                     },
                     "default?": {
@@ -77,6 +123,7 @@ async function getStyles(id) {
             },
         ]);
         if (styles.length > 0) {
+            console.log({ product_id: id, results: styles });
             return { product_id: id, results: styles };
         } else {
             console.error(`No styles data found for product id: ${id}`);
@@ -89,8 +136,10 @@ async function getStyles(id) {
 }
 
 module.exports = {
+    getFashion,
     getStyles,
     models: {
+        Fashion,
         Photo,
         Sku,
         Style

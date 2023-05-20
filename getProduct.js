@@ -27,7 +27,6 @@ const overviewSchema = new Schema({
 const Overview = mongoose.model('Overview', overviewSchema);
 
 async function getProduct(id) {
-    const startTime = process.hrtime();
     try {
         const product = await Overview.findOne({
             $or: [
@@ -39,11 +38,9 @@ async function getProduct(id) {
             .exec();
 
         if (product) {
-            const endTime = process.hrtime(startTime);
-            const duration = (endTime[0] * 1e9 + endTime[1]) / 1e6;
             return product;
         } else {
-            throw new Error(`Product with id ${id} not found in overviews collection.`);
+            throw new Error(`Product with id ${id} not found in Overviews collection.`);
         }
     } catch (err) {
         console.error('Error:', err);
