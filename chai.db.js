@@ -7,7 +7,7 @@ const { getStyles, models: { Photo, Sku, Style } } = require('./getStyles');
 const { getRelated, models: { Related } } = require('./getRelated');
 
 /** config variables -- edit as needed */ 
-let performanceTests = 100000;         // Probably don't want to exceed 100k
+let performanceTests = 1000;         // Probably don't want to exceed 100k
 let tolerance = {                      // Set your performance threshholds 
     best: 0.1,
     worst: 1000,

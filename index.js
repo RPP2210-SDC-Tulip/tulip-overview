@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 const { getProduct, getProducts } = require('./getProduct');
-const { getStyles } = require('./getStyles');
+const { getStyles, getFashion } = require('./getStyles');
 const { getRelated } = require('./getRelated');
 
 app.use(express.json());
@@ -11,7 +11,9 @@ app.use(express.json());
 app.get('/products/:product_id/styles', async (req, res) => {
     const id = parseInt(req.params.product_id);
     try {
-        const styles = await getStyles(id);
+        console.log('fashions:');
+        //const styles = await getStyles(id);
+        const styles = await getFashion(id);
         res.status(200).json(styles);
     } catch (err) {
         console.error('Error:', err);
