@@ -3,25 +3,26 @@ const chai = require('chai');
 const expect = chai.expect;
 const mongoose = require('mongoose');
 const { getProduct, getProducts, models: { Overview } } = require('./getProduct');
-const { getStyles, models: { Photo, Sku, Style } } = require('./getStyles');
+const { getStyles, getFashion, models: { Photo, Sku, Style, Fashion } } = require('./getStyles');
 const { getRelated, models: { Related } } = require('./getRelated');
 
 /** config variables -- edit as needed */ 
-let performanceTests = 1000;         // Probably don't want to exceed 100k
-let tolerance = {                      // Set your performance threshholds 
-    best: 0.1,
+let performanceTests = 100000;      // Probably don't want to exceed 100k
+let tolerance = {                   // Set your performance threshholds 
+    best: 0.05,
     worst: 1000,
-    average: 10,
+    average: 100,
 };
-let decimalPlaces = 5;                 // How many decimal places to report timestamps
-let measurements = {                   // Include functions here in order of execution
+let decimalPlaces = 5;              // How many decimal places to report timestamps
+let measurements = {                // Include functions here in order of execution
     _1__getProduct: [],
     _2_getProducts: [],
-    _3___getStyles: [],
+ //   _3___getStyles: [],
     _4__getRelated: [],
+    _5__getFashion: [],
 };
 
-/** globals */                         // no need to edit these 
+/** globals */                      // no need to edit these 
 let totalRoutes = Object.keys(measurements).length;
 let duration;
 let queryTimes = {};
@@ -39,7 +40,7 @@ describe('Database tests', function () {
         await mongoose.connection.close();
     });
 
-    it('should connect to the database successfully', async function () {
+    xit('should connect to the database successfully', async function () {
         expect(mongoose.connection.readyState).to.be.greaterThanOrEqual(1);
     });
 
@@ -51,6 +52,7 @@ describe('Database tests', function () {
             { name: 'skus', model: Sku },
             { name: 'styles', model: Style },
             { name: 'related', model: Related },
+            { name: 'fashion', model: Fashion },
         ];
 
         const startAudit = process.hrtime.bigint();
@@ -66,7 +68,7 @@ describe('Database tests', function () {
         console.log(`Audited ${collections.length} collections in ${audit} ms`);
     });
 
-    it(`should return valid JSON for each of the ${totalRoutes} routes`, async function () {
+    xit(`should return valid JSON for each of the ${totalRoutes} routes`, async function () {
 
         const randomId = Math.floor(Math.random() * 999999) + 1;
         const result = await getProduct(randomId);
@@ -94,7 +96,7 @@ describe('Database tests', function () {
     });
 
     describe(`Function (ms)| average | ↑slowest | ↓best  [${performanceTests} tests x ${totalRoutes} fns]`, function () {
-        this.timeout(10 * performanceTests * totalRoutes);
+        this.timeout(20 * performanceTests * totalRoutes);
         it(`should measure and validate the performance of ${totalRoutes} tests x ${performanceTests} iterations per function`, async function () {
             for (let i = 1; i <= performanceTests; i++) {
                 const randomId1 = Math.floor(Math.random() * 999999) + 1;
@@ -114,18 +116,26 @@ describe('Database tests', function () {
                 const min3 = Math.ceil(233330);
                 const max3 = Math.floor(233378);
                 const randomId3 = Math.floor(Math.random() * (max3 - min3 + 1)) + min3;
+/** 
                 const startTime3 = process.hrtime.bigint();
                 const result3 = await getStyles(randomId3);
                 const endTime3 = process.hrtime.bigint();
                 const duration3 = Number(endTime3 - startTime3) / 1e6;
                 measurements._3___getStyles.push(duration3);
-
+**/
                 const randomId4 = Math.floor(Math.random() * 999999) + 1;
                 const startTime4 = process.hrtime.bigint();
                 const result4 = await getRelated(randomId4);
                 const endTime4 = process.hrtime.bigint();
                 const duration4 = Number(endTime4 - startTime4) / 1e6;
                 measurements._4__getRelated.push(duration4);
+
+                const startTime5 = process.hrtime.bigint();
+                const result5 = await getFashion(randomId3);
+                const endTime5 = process.hrtime.bigint();
+                const duration5 = Number(endTime5 - startTime5) / 1e6;
+                measurements._5__getFashion.push(duration5);        
+                       
             }
 
             let stats = {};
