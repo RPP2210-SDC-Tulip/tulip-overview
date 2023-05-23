@@ -4,12 +4,12 @@ import { sleep } from 'k6';
 export const options = {
     vus: 5000,
     duration: '180s',
-    rps: 2500
+    rps: 4500
 };
 
 export default function () {
     // changing endpoint below should be all you need to test a different route
-    const selected = 'getRelated';
+    const selected = 'getStyles';
     const route = 'products';
     const apiUrl = 'http://localhost:3000/';
 
