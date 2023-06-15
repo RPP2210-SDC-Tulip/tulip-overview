@@ -6,12 +6,12 @@ const { getProduct, getProducts } = require('./getProduct');
 const { getStyles, getFashion } = require('./getStyles');
 const { getRelated } = require('./getRelated');
 
+app.use(express.static('public'));
 app.use(express.json());
 
 app.get('/products/:product_id/styles', async (req, res) => {
     const id = parseInt(req.params.product_id);
     try {
-        console.log('fashions:');
         //const styles = await getStyles(id);
         const styles = await getFashion(id);
         res.status(200).json(styles);
