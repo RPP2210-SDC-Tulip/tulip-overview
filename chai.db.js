@@ -30,7 +30,7 @@ let totalDuration = 0;
 
 describe('Database tests', function () {
     before(async function () {
-        await mongoose.connect('mongodb://18.188.128.249:27017/tulip-overview', {
+        await mongoose.connect('mongodb://3.15.178.151:27017/tulip-overview', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
