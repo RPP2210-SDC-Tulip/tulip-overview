@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb://localhost/tulip-overview', {
+mongoose.connect('mongodb://18.188.128.249:27017/tulip-overview', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
+
+/**
 
 const skusSchema = new Schema({}, { strict: false, collection: 'skus' });
 skusSchema.index({ styleId: 1 });
@@ -18,15 +20,20 @@ const photosSchema = new Schema({}, { strict: false, collection: 'photos' });
 photosSchema.index({ styleId: 1 });
 const Photo = mongoose.model('Photo', photosSchema);
 
+ */
+
 const fashionSchema = new Schema({
-    product_id: Number,
+    product_id: {
+        type: Number,
+        //unique: true,
+    },
     results: [
         {
             name: String,
             original_price: String,
             style_id: Number,
             sale_price: String,
-            default: Boolean,
+            isDefault: Boolean,
             photos: [
                 {
                     thumbnail_url: String,
@@ -41,6 +48,7 @@ const fashionSchema = new Schema({
 const Fashion = mongoose.model('Fashion', fashionSchema);
 
 async function getFashion(id) {
+    // needs 'default?' property from collection > API result
     try {
         const fashion = await Fashion.findOne({
             $or: [
@@ -49,10 +57,20 @@ async function getFashion(id) {
             ],
         })
             .select('product_id results -_id')
+            .lean()
             .exec();
 
-        if (fashion) {
-            console.log(fashion);
+        if (fashion.results) {
+            fashion.results.forEach(style => {
+                delete style._id;
+                style['default?'] = style.isDefault;
+                delete style.isDefault;
+                style.style_id = String(style.style_id); 
+                style.photos = style.photos.map(photo => {
+                    const { _id, ...rest } = photo;  
+                    return rest;   
+                })
+            });
             return fashion;
         } else {
             throw new Error(`Style with product_id ${id} not found in Fashions collection, which happens sometimes.`);
@@ -63,7 +81,7 @@ async function getFashion(id) {
     }
 }
 
-
+/** 
 async function getStyles(id) {
     try {
         const styles = await Style.aggregate([
@@ -123,7 +141,7 @@ async function getStyles(id) {
             },
         ]);
         if (styles.length > 0) {
-            console.log({ product_id: id, results: styles });
+            //       console.log({ product_id: id, results: styles });
             return { product_id: id, results: styles };
         } else {
             console.error(`No styles data found for product id: ${id}`);
@@ -134,14 +152,15 @@ async function getStyles(id) {
         throw err;
     }
 }
+*/
 
 module.exports = {
     getFashion,
-    getStyles,
+    //getStyles,
     models: {
         Fashion,
-        Photo,
-        Sku,
-        Style
+        //Photo,
+        //Sku,
+        //Style
     }
 };

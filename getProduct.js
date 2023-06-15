@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb://localhost/tulip-overview', {
+mongoose.connect('mongodb://18.188.128.249:27017/tulip-overview', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });

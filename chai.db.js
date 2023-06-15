@@ -6,8 +6,8 @@ const { getProduct, getProducts, models: { Overview } } = require('./getProduct'
 const { getStyles, getFashion, models: { Photo, Sku, Style, Fashion } } = require('./getStyles');
 const { getRelated, models: { Related } } = require('./getRelated');
 
-/** config variables -- edit as needed */ 
-let performanceTests = 100000;      // Probably don't want to exceed 100k
+/** config variables -- edit as needed */
+let performanceTests = 5000;      // Probably don't want to exceed 100k
 let tolerance = {                   // Set your performance threshholds 
     best: 0.05,
     worst: 1000,
@@ -17,7 +17,7 @@ let decimalPlaces = 5;              // How many decimal places to report timesta
 let measurements = {                // Include functions here in order of execution
     _1__getProduct: [],
     _2_getProducts: [],
- //   _3___getStyles: [],
+    //_3___getStyles: [],
     _4__getRelated: [],
     _5__getFashion: [],
 };
@@ -30,7 +30,7 @@ let totalDuration = 0;
 
 describe('Database tests', function () {
     before(async function () {
-        await mongoose.connect('mongodb://localhost/tulip-overview', {
+        await mongoose.connect('mongodb://18.188.128.249:27017/tulip-overview', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
@@ -99,6 +99,8 @@ describe('Database tests', function () {
         this.timeout(20 * performanceTests * totalRoutes);
         it(`should measure and validate the performance of ${totalRoutes} tests x ${performanceTests} iterations per function`, async function () {
             for (let i = 1; i <= performanceTests; i++) {
+
+
                 const randomId1 = Math.floor(Math.random() * 999999) + 1;
                 const startTime1 = process.hrtime.bigint();
                 const result1 = await getProduct(randomId1);
@@ -116,13 +118,13 @@ describe('Database tests', function () {
                 const min3 = Math.ceil(233330);
                 const max3 = Math.floor(233378);
                 const randomId3 = Math.floor(Math.random() * (max3 - min3 + 1)) + min3;
-/** 
                 const startTime3 = process.hrtime.bigint();
                 const result3 = await getStyles(randomId3);
                 const endTime3 = process.hrtime.bigint();
                 const duration3 = Number(endTime3 - startTime3) / 1e6;
                 measurements._3___getStyles.push(duration3);
-**/
+
+
                 const randomId4 = Math.floor(Math.random() * 999999) + 1;
                 const startTime4 = process.hrtime.bigint();
                 const result4 = await getRelated(randomId4);
@@ -134,8 +136,8 @@ describe('Database tests', function () {
                 const result5 = await getFashion(randomId3);
                 const endTime5 = process.hrtime.bigint();
                 const duration5 = Number(endTime5 - startTime5) / 1e6;
-                measurements._5__getFashion.push(duration5);        
-                       
+                measurements._5__getFashion.push(duration5);
+
             }
 
             let stats = {};
